@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 
 // Injecting The Context
 builder.Services.AddDbContext<DataContext>(optionsBuilder =>
-    optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("TestDb")));
+    optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("PermissionAuthDb")));
 builder.Services.AddIdentity<IdentityUser<long>, IdentityRole<long>>().AddEntityFrameworkStores<DataContext>();
 
 var app = builder.Build();
