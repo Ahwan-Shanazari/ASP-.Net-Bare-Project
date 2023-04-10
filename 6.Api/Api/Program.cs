@@ -1,16 +1,17 @@
 using Data.Contexts;
+using Framework;
 using Framework.Initializers;
+using Framework.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<IRouteDetector,RouteDetector>();
 
 // Injecting The Context
 builder.Services.AddDbContext<DataContext>(optionsBuilder =>
