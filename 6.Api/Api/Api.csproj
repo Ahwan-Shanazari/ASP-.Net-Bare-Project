@@ -15,11 +15,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers" />
+      <ProjectReference Include="..\..\5.Framework\Framework\Framework.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\5.Framework\Framework\Framework.csproj" />
+      <Folder Include="Controllers" />
     </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 using Data.Contexts;
+using Framework.Initializers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,8 +16,18 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(optionsBuilder =>
     optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("PermissionAuthDb")));
 builder.Services.AddIdentity<IdentityUser<long>, IdentityRole<long>>().AddEntityFrameworkStores<DataContext>();
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 4;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+});
 
 var app = builder.Build();
+
+await app.InitialDbWithSuperAdmin(app.Services);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
