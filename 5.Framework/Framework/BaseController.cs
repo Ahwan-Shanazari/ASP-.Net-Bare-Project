@@ -10,14 +10,12 @@ namespace Framework;
 public abstract class BaseController : ControllerBase
 {
     protected readonly IMapper _mapper;
-    private readonly HttpContext _context;
 
-    public BaseController(IMapper mapper, HttpContext context)
+    public BaseController(IMapper mapper)
     {
         _mapper = mapper;
-        _context = context;
     }
 
-    protected string CurrentUserId => _context.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0";
-    protected string CurrentUserName => _context.User?.FindFirstValue(ClaimTypes.Name) ?? "";
+    protected string CurrentUserId => HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0";
+    protected string CurrentUserName => HttpContext.User?.FindFirstValue(ClaimTypes.Name) ?? "";
 }
