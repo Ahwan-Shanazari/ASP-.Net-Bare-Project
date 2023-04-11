@@ -9,5 +9,6 @@ public class UserProfile:Profile
     public UserProfile()
     {
         CreateMap<IdentityUser<long>, UserDto>().ReverseMap();
+        CreateMap<IdentityUser<long>, LoggedInUserDto>().ReverseMap();
     }
 }
