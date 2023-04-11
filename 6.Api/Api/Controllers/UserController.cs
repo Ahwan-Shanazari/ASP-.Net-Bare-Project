@@ -12,8 +12,8 @@ public class UserController : BaseController
 {
     private readonly IUserServices _userServices;
 
-    public UserController(IUserServices userServices, IMapper mapper, HttpContext context) 
-        : base(mapper, context)
+    public UserController(IUserServices userServices, IMapper mapper) 
+        : base(mapper)
     {
         _userServices = userServices;
     }

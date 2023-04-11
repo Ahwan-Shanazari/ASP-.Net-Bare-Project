@@ -13,8 +13,8 @@ public class SuperAdminController : BaseController
 {
     private readonly IRouteDetector _routeDetector;
 
-    public SuperAdminController(IRouteDetector routeDetector, IMapper mapper, HttpContext context) 
-        : base(mapper, context)
+    public SuperAdminController(IRouteDetector routeDetector, IMapper mapper) 
+        : base(mapper)
     {
         _routeDetector = routeDetector;
     }
