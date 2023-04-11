@@ -45,4 +45,9 @@ public class UserServices : BaseServices<IdentityUser<long>>, IUserServices
     {
         await _signInManager.SignOutAsync();
     }
+
+    public async Task<IdentityUser<long>> FindUser(long id)
+    {
+        return await _repository.Read(x => x.Id == id);
+    }
 }

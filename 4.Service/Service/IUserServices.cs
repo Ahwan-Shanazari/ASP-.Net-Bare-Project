@@ -8,4 +8,5 @@ public interface IUserServices
     Task DeleteAccount(IdentityUser<long> user);
     Task<bool> Login(string userName , string pass);
     Task Logout();
+    Task<IdentityUser<long>> FindUser(long id);
 }
