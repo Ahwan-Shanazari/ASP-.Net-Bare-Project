@@ -4,5 +4,5 @@ namespace Framework.Interfaces;
 
 public interface IRouteDetector
 {
-    Dictionary<string, string> GetAllRoutes(Assembly controllers);
+    Dictionary<string, List<string>> GetAllRoutes(Assembly controllers);
 }
