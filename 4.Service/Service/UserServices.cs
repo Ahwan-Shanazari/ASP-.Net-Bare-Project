@@ -1,3 +1,4 @@
+using Data.Repositories;
 using Data.Repositories.Base;
 using Microsoft.AspNetCore.Identity;
 using Service.Base;
@@ -6,13 +7,15 @@ namespace Service;
 
 public class UserServices : BaseServices<IdentityUser<long>>, IUserServices
 {
+    private readonly IUserRepository _repository;
     private readonly UserManager<IdentityUser<long>> _userManager;
     private readonly SignInManager<IdentityUser<long>> _signInManager;
 
-    public UserServices(IBaseRepository<IdentityUser<long>> repository, UserManager<IdentityUser<long>> userManager,
+    public UserServices(IUserRepository repository, UserManager<IdentityUser<long>> userManager,
         IUnitOfWork unitOfWork,SignInManager<IdentityUser<long>> signInManager) :
-        base(repository, unitOfWork)
+        base(unitOfWork)
     {
+        _repository = repository;
         _userManager = userManager;
         _signInManager = signInManager;
     }
