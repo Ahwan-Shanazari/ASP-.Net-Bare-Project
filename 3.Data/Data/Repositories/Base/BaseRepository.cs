@@ -16,7 +16,7 @@ public class BaseRepository<TEntity>:IBaseRepository<TEntity> where TEntity : cl
 
     public async Task<TEntity> Read(Expression<Func<TEntity,bool>> predict)
     {
-        return await entities.FirstOrDefaultAsync(predict);
+        return await entities.AsNoTracking().FirstOrDefaultAsync(predict);
     }
 
     public async Task<TEntity> Create(TEntity entity)
