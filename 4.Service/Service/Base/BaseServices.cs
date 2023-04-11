@@ -2,12 +2,14 @@ using Data.Repositories.Base;
 
 namespace Service.Base;
 
-public class BaseServices<TEntity> where TEntity: class
+public abstract class BaseServices<TEntity> : IBaseServices where TEntity: class
 {
-    private readonly BaseRepository<TEntity> _repository;
+    protected readonly IBaseRepository<TEntity> _repository;
+    protected readonly IUnitOfWork _unitOfWork;
 
-    public BaseServices(BaseRepository<TEntity> repository)
+    public BaseServices(IBaseRepository<TEntity> repository,IUnitOfWork unitOfWork)
     {
         _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 }
