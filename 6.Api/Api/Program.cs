@@ -1,3 +1,4 @@
+using System.Reflection;
 using Data.Contexts;
 using Framework;
 using Framework.Initializers;
@@ -12,6 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IRouteDetector,RouteDetector>();
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 // Injecting The Context
 builder.Services.AddDbContext<DataContext>(optionsBuilder =>
