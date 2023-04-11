@@ -1,4 +1,5 @@
 using System.Collections;
+using AutoMapper;
 using Framework;
 using Framework.CustomAttributes;
 using Framework.Interfaces;
@@ -12,7 +13,8 @@ public class SuperAdminController : BaseController
 {
     private readonly IRouteDetector _routeDetector;
 
-    public SuperAdminController(IRouteDetector routeDetector)
+    public SuperAdminController(IRouteDetector routeDetector, IMapper mapper, HttpContext context) 
+        : base(mapper, context)
     {
         _routeDetector = routeDetector;
     }
