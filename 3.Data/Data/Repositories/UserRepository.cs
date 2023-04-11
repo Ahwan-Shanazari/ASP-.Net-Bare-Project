@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Data.Repositories;
 
-public class UserRepository:BaseRepository<IdentityUser<long>>
+public class UserRepository:BaseRepository<IdentityUser<long>>, IUserRepository
 {
     public UserRepository(DataContext context) : base(context)
     {
