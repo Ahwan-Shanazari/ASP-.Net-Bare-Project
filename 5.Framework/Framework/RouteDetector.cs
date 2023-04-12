@@ -1,4 +1,5 @@
 using System.Reflection;
+using Framework.CustomAttributes;
 using Framework.Interfaces;
 using Microsoft.AspNetCore.Mvc.Routing;
 
@@ -12,13 +13,24 @@ public class RouteDetector : IRouteDetector
 
         var controllerTypes = controllers.GetExportedTypes().Where(type =>
             !type.IsAbstract && !type.IsInterface && type.IsClass && type.IsAssignableTo(typeof(BaseController)));
-
         foreach (var controllerType in controllerTypes)
         {
-            var actions = controllerType.GetMethods().Where(method =>
-                    method.IsPublic && method.GetCustomAttribute<HttpMethodAttribute>() is not null)
-                .Select(method => method.Name).ToList();
-            controllersAndActions.Add(controllerType.Name.ToLower().Replace("controller", ""), actions);
+            List<string> actions;
+            if (controllerType.GetCustomAttribute<PermissionAuthorizeAttribute>() is not null)
+            {
+                actions = controllerType.GetMethods().Where(method =>
+                        method.IsPublic && method.GetCustomAttribute<HttpMethodAttribute>() is not null)
+                    .Select(method => method.Name).ToList();
+            }
+            else
+            {
+                actions = controllerType.GetMethods().Where(method =>
+                        method.IsPublic && method.GetCustomAttribute<PermissionAuthorizeAttribute>() is not null)
+                    .Select(method => method.Name).ToList();
+            }
+
+            if (actions.Count > 0)
+                controllersAndActions.Add(controllerType.Name.ToLower().Replace("controller", ""), actions);
         }
 
         return controllersAndActions;

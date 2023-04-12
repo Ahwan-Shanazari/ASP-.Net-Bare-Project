@@ -24,4 +24,5 @@ public class SuperAdminController : BaseController
     {
         return Ok(_routeDetector.GetAllRoutes(typeof(SuperAdminController).Assembly));
     }
+    
 }
