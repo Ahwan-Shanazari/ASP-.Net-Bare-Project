@@ -1,4 +1,5 @@
 using Data.Repositories.Base;
+using Service.Interfaces;
 
 namespace Service.Base;
 

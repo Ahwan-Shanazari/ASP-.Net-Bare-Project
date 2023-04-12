@@ -2,6 +2,7 @@ using Data.Repositories;
 using Data.Repositories.Base;
 using Microsoft.AspNetCore.Identity;
 using Service.Base;
+using Service.Interfaces;
 
 namespace Service;
 

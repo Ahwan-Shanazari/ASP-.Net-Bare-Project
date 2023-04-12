@@ -1,4 +1,4 @@
-namespace Service.Base;
+namespace Service.Interfaces;
 
 public interface IBaseServices
 {
