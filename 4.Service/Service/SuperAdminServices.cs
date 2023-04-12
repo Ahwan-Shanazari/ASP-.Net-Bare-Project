@@ -16,22 +16,22 @@ public class SuperAdminServices : ISuperAdminServices
         _userManager = userManager;
     }
 
-    public async Task<IDictionary<IdentityRole<long>, List<Claim>>> GetAllRolesWithPermissions()
+    public async Task<IDictionary<string, List<string>>> GetAllRolesWithPermissions()
     {
-        Dictionary<IdentityRole<long>, List<Claim>> result = new();
+        Dictionary<string, List<string>> result = new();
         var roles = await _roleManager.Roles.ToListAsync();
         foreach (var role in roles)
         {
-            List<Claim> rolePermissions = new();
+            List<string> rolePermissions = new();
             rolePermissions = (await _roleManager.GetClaimsAsync(role)).Where(claim => claim.Type.Equals("Permission"))
-                .ToList();
-            result.Add(role, rolePermissions);
+                .Select(claim => claim.Value).ToList();
+            result.Add(role.Name, rolePermissions);
         }
-
+        
         return result;
     }
 
-    public async Task<bool> CreateRoles(IdentityRole<long> role)
+    public async Task<bool> CreateRole(IdentityRole<long> role)
     {
         var result = await _roleManager.CreateAsync(role);
         if (result.Succeeded)
