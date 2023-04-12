@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Service;
+using Service.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

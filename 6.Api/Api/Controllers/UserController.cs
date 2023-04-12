@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using Service.Interfaces;
 
 namespace Api.Controllers;
 
@@ -30,7 +31,7 @@ public class UserController : BaseController
     [HttpPost]
     public async Task<IActionResult> CreateAccount(UserDto dto)
     {
-        var user = _mapper.Map<IdentityUser<long>>(dto);
+        var user = Mapper.Map<IdentityUser<long>>(dto);
         var result = await _userServices.CreateAccount(user, dto.Password);
         if (result)
             return Ok();
@@ -50,7 +51,7 @@ public class UserController : BaseController
     public async Task<IActionResult> GetCurrentLoggedInUserInfo()
     {
         var userEntity = await _userServices.FindUser(long.Parse(CurrentUserId));
-        var userDto = _mapper.Map<LoggedInUserDto>(userEntity);
+        var userDto = Mapper.Map<LoggedInUserDto>(userEntity);
         return Ok(userDto);
     }
 }

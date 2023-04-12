@@ -9,11 +9,11 @@ namespace Framework;
 [Route("api/[controller]/[action]")]
 public abstract class BaseController : ControllerBase
 {
-    protected readonly IMapper _mapper;
+    protected readonly IMapper Mapper;
 
     public BaseController(IMapper mapper)
     {
-        _mapper = mapper;
+        Mapper = mapper;
     }
 
     protected string CurrentUserId => HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0";
