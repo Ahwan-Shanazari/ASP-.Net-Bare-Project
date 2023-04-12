@@ -22,6 +22,7 @@ builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ISuperAdminServices, SuperAdminServices>();
 
 // Injecting The Context
 builder.Services.AddDbContext<DataContext>(optionsBuilder =>
