@@ -1,6 +1,6 @@
 namespace Api.Dtos;
 
-public class UserDto
+public class UserSignupDto
 {
     public string UserName { get; set; }
     public string Email { get; set; }

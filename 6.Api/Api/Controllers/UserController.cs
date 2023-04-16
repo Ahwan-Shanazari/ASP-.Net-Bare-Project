@@ -29,10 +29,10 @@ public class UserController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateAccount(UserDto dto)
+    public async Task<IActionResult> CreateAccount(UserSignupDto signupDto)
     {
-        var user = Mapper.Map<IdentityUser<long>>(dto);
-        var result = await _userServices.CreateAccount(user, dto.Password);
+        var user = Mapper.Map<IdentityUser<long>>(signupDto);
+        var result = await _userServices.CreateAccount(user, signupDto.Password);
         if (result)
             return Ok();
         return BadRequest();
