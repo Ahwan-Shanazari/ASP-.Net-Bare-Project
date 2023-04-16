@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,19 +17,28 @@ public class SuperAdminServices : ISuperAdminServices
         _userManager = userManager;
     }
 
-    public async Task<IDictionary<string, List<string>>> GetAllRolesWithPermissions()
+    public async Task<IDictionary<IdentityRole<long>, List<Claim>>> GetAllRolesWithPermissions()
     {
-        Dictionary<string, List<string>> result = new();
+        Dictionary<IdentityRole<long>, List<Claim>> result = new();
         var roles = await _roleManager.Roles.ToListAsync();
         foreach (var role in roles)
         {
-            List<string> rolePermissions = new();
-            rolePermissions = (await _roleManager.GetClaimsAsync(role)).Where(claim => claim.Type.Equals("Permission"))
-                .Select(claim => claim.Value).ToList();
-            result.Add(role.Name, rolePermissions);
+            List<Claim> rolePermissions = (await _roleManager.GetClaimsAsync(role)).Where(claim => claim.Type.Equals("Permission"))
+                .Select(claim => claim).ToList();
+            //ToDo: check what will happen if rolePermissions was null
+            result.Add(role, rolePermissions ?? new List<Claim>());
         }
         
         return result;
+    }
+
+    public async Task<Tuple<IdentityUser<long>,Tuple<List<IdentityRole<long>>>,List<Claim>>> GetAllUsersWithRolesAndPermissions()
+    {
+        foreach (var user in await _userManager.Users.ToListAsync())
+        {
+            List<Claim> claims = new();
+            var c2laims = await _userManager.GetClaimsAsync(user);
+        }
     }
 
     public async Task<bool> CreateRole(IdentityRole<long> role)
@@ -38,7 +48,9 @@ public class SuperAdminServices : ISuperAdminServices
             return true;
         return false;
     }
-
+    
+    //ToDo: we must create a logic for AddPermission methods to not add again an existing permission    
+    
     public async Task<bool> AddRolePermission(long roleId, IEnumerable<Claim> claims)
     {
         var role = await _roleManager.FindByIdAsync(roleId.ToString());
@@ -145,7 +157,7 @@ public class SuperAdminServices : ISuperAdminServices
         return (await _userManager.RemoveClaimsAsync(user, userClaims)).Succeeded;
     }
 
-    public async Task<bool> DeleteRolePermission(long roleId)
+    public async Task<bool> DeleteRolePermissions(long roleId)
     {
         var role = await _roleManager.FindByIdAsync(roleId.ToString());
         var roleClaims = (await _roleManager.GetClaimsAsync(role)).Where(claim => claim.Type.Equals("Permission"));

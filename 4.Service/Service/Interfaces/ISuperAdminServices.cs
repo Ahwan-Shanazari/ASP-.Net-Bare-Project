@@ -5,7 +5,7 @@ namespace Service.Interfaces;
 
 public interface ISuperAdminServices
 {
-    Task<IDictionary<string, List<string>>> GetAllRolesWithPermissions();
+    Task<IDictionary<IdentityRole<long>, List<Claim>>> GetAllRolesWithPermissions();
     Task<bool> CreateRole(IdentityRole<long> role);
     Task<bool> AddRolePermission(long roleId, IEnumerable<Claim> claims);
     Task<bool> AddRolePermission(long roleId, Claim claim);
@@ -25,5 +25,5 @@ public interface ISuperAdminServices
         Dictionary<string, List<string>> allRoutes);
 
     Task<bool> DeleteUserPermissions(long userId);
-    Task<bool> DeleteRolePermission(long roleId);
+    Task<bool> DeleteRolePermissions(long roleId);
 }
