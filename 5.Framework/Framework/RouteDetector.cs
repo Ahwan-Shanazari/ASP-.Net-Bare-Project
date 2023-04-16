@@ -7,6 +7,7 @@ namespace Framework;
 
 public class RouteDetector : IRouteDetector
 {
+    //ToDo: Fix The Return Type
     public Dictionary<string, List<string>> GetAllRoutes(Assembly controllers)
     {
         Dictionary<string, List<string>> controllersAndActions = new();
