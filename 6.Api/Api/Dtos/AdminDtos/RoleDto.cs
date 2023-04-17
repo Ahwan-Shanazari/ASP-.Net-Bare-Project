@@ -2,13 +2,13 @@ namespace Api.Dtos.AdminDtos;
 
 public class RoleDto
 {
-    public long Id { get; set; }
+    public long RoleId { get; set; }
     public string Name { get; set; }
     
     public List<string> Permissions { get; set; }
-    public RoleDto(long id,string name)
+    public RoleDto(long roleId,string name)
     {
-        Id = id;
+        RoleId = roleId;
         Name = name;
     }
 }
