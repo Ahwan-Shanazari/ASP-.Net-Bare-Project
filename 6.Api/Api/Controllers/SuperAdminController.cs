@@ -14,7 +14,8 @@ using Service.Interfaces;
 
 namespace Api.Controllers;
 
-[PermissionAuthorize]
+//[PermissionAuthorize]
+[ServiceFilter(typeof(PermissionAuthorizeAttribute))]
 public class SuperAdminController : BaseController
 {
     private readonly IRouteDetector _routeDetector;
