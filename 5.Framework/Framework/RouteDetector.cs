@@ -8,6 +8,7 @@ namespace Framework;
 public class RouteDetector : IRouteDetector
 {
     //ToDo: Fix The Return Type
+    //ToDo: Implement a logic for checking inner routes of actions too
     public Dictionary<string, List<string>> GetAllRoutes(Assembly controllers)
     {
         Dictionary<string, List<string>> controllersAndActions = new();
