@@ -37,7 +37,7 @@ public class SuperAdminController : BaseController
     [HttpGet]
     public async Task<ActionResult<List<RoleDto>>> GetAllRolesWithPermissions()
     {
-        var rolesWithPermissions = await _superAdminServices.GetAllRolesWithPermissions();
+        var rolesWithPermissions = await _superAdminServices.GetRolesWithPermissions();
         List<RoleDto> result = new();
         //ToDo: do this with auto mapper 
         rolesWithPermissions.ToList().ForEach(pair =>
@@ -46,9 +46,28 @@ public class SuperAdminController : BaseController
         return result;
     }
 
+    [HttpGet]
     public async Task<ActionResult<List<UserDto>>> GetAllUsersWithRolesAndPermissions()
     {
-        
+        var usersWithPermissions = await _superAdminServices.GetUsersWithPermissions();
+        //ToDo: do this with auto mapper
+        List<UserDto> result = new();
+        foreach (var pair in usersWithPermissions)
+        {
+            UserDto dto = new();
+            dto.UserId = pair.Key.Id;
+            dto.CustomPermissions = pair.Value.Select(claim => claim.Value).ToList();
+            //ToDo:what will happen if we use user instead of userId and just pass these keys as parameters
+            List<RoleDto> dtoRoles = new();
+            dto.Roles =(await _superAdminServices.GetRolesWithPermissions(pair.Key.Id)).Select(rolePair =>
+            {
+                return new RoleDto(rolePair.Key.Id, rolePair.Key.Name)
+                    { Permissions = rolePair.Value.Select(claim => claim.Value).ToList() };
+            }).ToList();
+            result.Add(dto);
+        }
+
+        return result;
     }
 
     [HttpPost]
@@ -58,15 +77,28 @@ public class SuperAdminController : BaseController
     }
 
     [HttpPost]
-    //ToDo: change the parameters to RoleDto
+    public async Task<IActionResult> AddRolesToUser(long userId, List<string> roleNames)
+    {
+        return Ok(await _superAdminServices.AddRolesToUser(userId, roleNames));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> RemoveUserRoles(long userId)
+    {
+        return Ok(await _superAdminServices.RemoveUserRoles(userId));
+    }
+
+    [HttpPost]
+    //ToDo: change the parameters to Dto?
     public async Task<IActionResult> AddRolePermission(long roleId, IEnumerable<string> claimNames)
     {
         var claims = new List<Claim>();
+        //ToDo: Use Fluent validator on dto for this checking 
         var permissionsUrls = ConvertRoutesToUrls(_routeDetector.GetAllRoutes(Assembly.GetExecutingAssembly()));
         foreach (var claim in claimNames)
         {
             //ToDo: this must be converted to fluent validation
-            if (!permissionsUrls.Contains(claim,StringComparer.OrdinalIgnoreCase))
+            if (!permissionsUrls.Contains(claim, StringComparer.OrdinalIgnoreCase))
                 return BadRequest("one of the Permissions is incorrect");
 
             claims.Add(new Claim("Permission", claim));
@@ -77,9 +109,22 @@ public class SuperAdminController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddUserPermissionsAndRoles(UserDto user)
+    //ToDo: change the parameters to Dto?
+    public async Task<IActionResult> AddUserPermissions(long userId, List<string> permissions)
     {
-        return Ok();
+        var claims = new List<Claim>();
+        //ToDo: Use Fluent validator on dto for this checking 
+        var permissionsUrls = ConvertRoutesToUrls(_routeDetector.GetAllRoutes(Assembly.GetExecutingAssembly()));
+        foreach (var permission in permissions)
+        {
+            //ToDo: this must be converted to fluent validation
+            if (!permissionsUrls.Contains(permission, StringComparer.OrdinalIgnoreCase))
+                return BadRequest("one of the Permissions is incorrect");
+            
+            claims.Add(new Claim("Permission",permission));
+        }
+
+        return Ok(await _superAdminServices.AddUserPermission(userId,claims));
     }
 
     [HttpPost]
@@ -88,7 +133,7 @@ public class SuperAdminController : BaseController
         var result = await _superAdminServices.DeleteRolePermissions(roleId);
         return Ok(result);
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> DeleteUserPermissions(long userId)
     {
