@@ -3,6 +3,7 @@ using Data.Contexts;
 using Data.Repositories;
 using Data.Repositories.Base;
 using Framework;
+using Framework.CustomAttributes;
 using Framework.Initializers;
 using Framework.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -19,10 +20,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IRouteDetector,RouteDetector>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services.AddScoped<PermissionAuthorizeAttribute>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ISuperAdminServices, SuperAdminServices>();
+builder.Services.AddScoped<IUserClaimsRepository, UserClaimsRepository>();
+builder.Services.AddScoped<IUserRolesRepository, UserRolesRepository>();
 
 // Injecting The Context
 builder.Services.AddDbContext<DataContext>(optionsBuilder =>
