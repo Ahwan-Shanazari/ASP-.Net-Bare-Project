@@ -149,7 +149,7 @@ public class SuperAdminController : BaseController
         {
             foreach (var actionName in route.Value)
             {
-                urls.Add($"api/{route.Key}/{actionName}");
+                urls.Add($"/api/{route.Key}/{actionName}");
             }
         }
 

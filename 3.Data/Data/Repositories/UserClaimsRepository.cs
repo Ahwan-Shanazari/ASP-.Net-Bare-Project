@@ -13,7 +13,7 @@ public class UserClaimsRepository:BaseRepository<IdentityUserClaim<long>>, IUser
 
     public List<Claim> GetUserPermissions(long userId)
     {
-        return entities.Where(userClaim => userClaim.UserId == userId && userClaim.ClaimType == "Permissions")
+        return entities.Where(userClaim => userClaim.UserId == userId && userClaim.ClaimType == "Permission")
             .Select(userClaim => userClaim.ToClaim()).ToList();
     }
 }

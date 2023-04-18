@@ -146,7 +146,7 @@ public class SuperAdminServices : ISuperAdminServices
             var role = await _roleManager.FindByIdAsync(roleId.ToString());
             foreach (var action in allRoutes.FirstOrDefault(pair => pair.Key.Equals(controller)).Value)
             {
-                if (!(await _roleManager.AddClaimAsync(role, new Claim("Permission", $"api/{controller}/{action}")))
+                if (!(await _roleManager.AddClaimAsync(role, new Claim("Permission", $"/api/{controller}/{action}")))
                     .Succeeded)
                     return false;
             }
@@ -165,7 +165,7 @@ public class SuperAdminServices : ISuperAdminServices
             var user = await _userManager.FindByIdAsync(userId.ToString());
             foreach (var action in allRoutes.FirstOrDefault(pair => pair.Key.Equals(controller)).Value)
             {
-                if (!(await _userManager.AddClaimAsync(user, new Claim("Permission", $"api/{controller}/{action}")))
+                if (!(await _userManager.AddClaimAsync(user, new Claim("Permission", $"/api/{controller}/{action}")))
                     .Succeeded)
                     return false;
             }
