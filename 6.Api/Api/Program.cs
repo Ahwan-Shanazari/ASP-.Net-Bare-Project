@@ -21,12 +21,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IRouteDetector,RouteDetector>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddScoped<PermissionAuthorizeAttribute>();
+//ToDo: Inject the repositories dynamically using reflection and an assembly of data layer. look for their Interfaces and inject them with that. 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ISuperAdminServices, SuperAdminServices>();
 builder.Services.AddScoped<IUserClaimsRepository, UserClaimsRepository>();
 builder.Services.AddScoped<IUserRolesRepository, UserRolesRepository>();
+builder.Services.AddScoped<IRoleClaimRepository, RoleClaimRepository>();
 
 // Injecting The Context
 builder.Services.AddDbContext<DataContext>(optionsBuilder =>
