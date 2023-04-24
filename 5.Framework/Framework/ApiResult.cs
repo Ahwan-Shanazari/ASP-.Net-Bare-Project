@@ -23,11 +23,11 @@ public class ApiResult
         };
     }
 
-    public IActionResult ToIActionResult(ApiResult result)
+    public IActionResult ToIActionResult()
     {
-        return new ObjectResult(result.Self)
+        return new ObjectResult(Self)
         {
-            StatusCode = (int)result.StatusCode
+            StatusCode = (int)StatusCode
         };
     }
 }
