@@ -5,15 +5,16 @@ namespace Framework;
 
 public class ApiResult
 {
-    protected ApiResult Self;
+    private ApiResult Self;
     
     public ApiResult()
     {
         Self = this;
     }
-    public bool IsSuccess { get; set; }
-    public string? Message { get; set; }
-    public HttpStatusCode StatusCode { get; set; }
+
+    public bool IsSuccess { get; set; } = true;
+    public string Message { get; set; }
+    public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.OK;
 
     public  static implicit operator ActionResult(ApiResult result)
     {
@@ -32,7 +33,7 @@ public class ApiResult
     }
 }
 
-public class ApiResult<T>:ApiResult where T: class
+public class ApiResult<T>:ApiResult
 {
-    public T Data { get; set; }
+    public T? Data { get; set; }
 }

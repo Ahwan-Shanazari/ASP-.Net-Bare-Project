@@ -24,7 +24,7 @@ public class UserController : BaseController
     public async Task<IActionResult> Login(UserLoginDto user)
     {
         var token = await _userServices.Login(user.UserName, user.Password);
-        return Ok(token);
+        return SendResult(token);
     }
 
     [HttpPost]
