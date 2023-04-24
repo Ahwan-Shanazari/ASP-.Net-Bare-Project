@@ -22,6 +22,14 @@ public class ApiResult
             StatusCode = (int)result.StatusCode
         };
     }
+
+    public IActionResult ToIActionResult(ApiResult result)
+    {
+        return new ObjectResult(result.Self)
+        {
+            StatusCode = (int)result.StatusCode
+        };
+    }
 }
 
 public class ApiResult<T>:ApiResult where T: class
