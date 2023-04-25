@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Net;
 using System.Reflection;
 using System.Security.Claims;
 using Api.Dtos;
@@ -140,6 +141,15 @@ public class SuperAdminController : BaseController
     {
         var result = await _superAdminServices.DeleteUserPermissions(userId);
         return Ok(result);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> UpdateSecurityStampAsync(long userId)
+    {
+        if (!(await _superAdminServices.UpdateUserSecurityStampAsync(userId)))
+            return SendResult(statusCode:HttpStatusCode.BadRequest,isSuccess:false);
+        return SendResult();
+
     }
 
     private List<string> ConvertRoutesToUrls(Dictionary<string, List<string>> allRoutes)

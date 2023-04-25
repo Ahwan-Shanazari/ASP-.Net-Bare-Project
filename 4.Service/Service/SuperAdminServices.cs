@@ -6,6 +6,7 @@ using Service.Interfaces;
 
 namespace Service;
 
+//ToDo: Create region for codes
 public class SuperAdminServices : ISuperAdminServices
 {
     private readonly RoleManager<IdentityRole<long>> _roleManager;
@@ -218,5 +219,11 @@ public class SuperAdminServices : ISuperAdminServices
         }
 
         return true;
+    }
+
+    public async Task<bool> UpdateUserSecurityStampAsync(long userId)
+    {
+        var user =await _userManager.FindByIdAsync(userId.ToString());
+        return (await _userManager.UpdateSecurityStampAsync(user)).Succeeded;
     }
 }

@@ -29,4 +29,5 @@ public interface ISuperAdminServices
     Task<IDictionary<IdentityUser<long>, List<Claim>>> GetUsersWithPermissions();
     Task<bool> AddRolesToUser(long userId, List<string> roleNames);
     Task<bool> RemoveUserRoles(long userId,List<string>? roleName = null);
+    Task<bool> UpdateUserSecurityStampAsync(long userId);
 }
