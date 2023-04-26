@@ -25,13 +25,16 @@ public static class JwtConfigurationExtensions
                 var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
+                    RequireSignedTokens = true,
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = configuration["JwtOptions:ValidIssuer"],
                     ValidAudience = configuration["JwtOptions:ValidAudience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtOptions:Key"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtOptions:Key"])),
+                    TokenDecryptionKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtOptions:KeyX"])),
+                    ClockSkew = TimeSpan.Zero
                 };
                 options.Events = new JwtBearerEvents
                 {

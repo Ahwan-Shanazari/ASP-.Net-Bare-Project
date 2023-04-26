@@ -48,40 +48,46 @@ public class UserServices : BaseServices<IdentityUser<long>>, IUserServices
     public async Task<string> Login(string userName, string pass)
     {
         var user = await _repository.Read(user => user.UserName == userName);
-        
+
         //ToDo: Use Custom Exceptions
         //TODo: Create Exception Handler middleware to catch these
         if (user is null)
             throw new ArgumentNullException();
-        
+
         //ToDo: Use Custom Exceptions
-        if (!(await _signInManager.CheckPasswordSignInAsync(user,pass,false)).Succeeded)
+        if (!(await _signInManager.CheckPasswordSignInAsync(user, pass, false)).Succeeded)
         {
             throw new Exception();
         }
-        
+
         //ToDo: replace _configuration with custom appsettings class
 
-        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JwtOptions:Key"]));
-        var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtOptions:Key"]));
+        var keyX = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtOptions:KeyX"]));
 
+        var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var encryptingCredentials = new EncryptingCredentials(keyX,SecurityAlgorithms.Aes128KW,SecurityAlgorithms.Aes256CbcHmacSha512);
+        
         List<Claim> claims = new()
         {
-            new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
-            new Claim(ClaimTypes.Name,user.UserName),
-            new Claim("SecurityStamp",user.SecurityStamp)
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim("SecurityStamp", user.SecurityStamp)
         };
+        var jwtHandler = new JwtSecurityTokenHandler();
         
-        var tokenOptions = new JwtSecurityToken(
-            issuer: _configuration["JwtOptions:ValidIssuer"],
-            audience: _configuration["JwtOptions:ValidAudience"],
-            claims: claims,
-            expires: DateTime.Now.AddMonths(1),
-            signingCredentials: signingCredentials
-        );
+        var tokenOptions = new SecurityTokenDescriptor(){
+            Issuer= _configuration["JwtOptions:ValidIssuer"],
+            Audience= _configuration["JwtOptions:ValidAudience"],
+            Expires = DateTime.Now.AddMonths(1),
+            SigningCredentials= signingCredentials,
+            EncryptingCredentials = encryptingCredentials,
+            //ToDo: should we use Subject for claims or use Claims instead
+            Subject = new ClaimsIdentity(claims)
+        };
 
-        var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-        return token;
+        var token = jwtHandler.CreateJwtSecurityToken(tokenOptions);
+        return jwtHandler.WriteToken(token);
     }
 
     public async Task Logout()
@@ -93,5 +99,4 @@ public class UserServices : BaseServices<IdentityUser<long>>, IUserServices
     {
         return await _repository.Read(x => x.Id == id);
     }
-    
 }
