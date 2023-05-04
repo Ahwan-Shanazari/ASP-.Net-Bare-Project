@@ -2,11 +2,8 @@ using System.Reflection;
 using Data.Contexts;
 using Data.Repositories;
 using Data.Repositories.Base;
-using Framework;
 using Framework.Configurations;
 using Framework.Configurations.Initializers;
-using Framework.CustomAttributes;
-using Framework.Interfaces;
 using Service;
 using Service.Interfaces;
 
@@ -19,9 +16,10 @@ builder.Services.AddEndpointsApiExplorer();
 //adding swagger with requirements
 builder.Services.AddSwaggerWithJwtSupport();
 
-builder.Services.AddSingleton<IRouteDetector, RouteDetector>();
+//adding needed services
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-builder.Services.AddScoped<PermissionAuthorizeAttribute>();
+
+//adding repositories
 //ToDo: Inject the repositories dynamically using reflection and an assembly of data layer. look for their Interfaces and inject them with that. 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserServices, UserServices>();
@@ -36,6 +34,9 @@ builder.Services.AddDefaultIdentityForAContext<DataContext>(builder.Configuratio
 
 //adding authentication and jwt services
 builder.Services.AddJwtServices();
+
+//adding custom authorization services
+builder.Services.AddPermissionAuthorization();
 
 var app = builder.Build();
 

@@ -7,15 +7,12 @@ namespace Api.Controllers;
 
 public class TestController:BaseController
 {
-
-
     public TestController(IMapper mapper) : base(mapper)
     {
-
     }
 
     [HttpGet]
-    [ServiceFilter(typeof(PermissionAuthorizeAttribute))]
+    [PermissionAuthorize]
     public IActionResult HelloWorld()
     {
         return Ok("Hello World");

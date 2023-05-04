@@ -19,9 +19,8 @@ public class RouteDetector : IRouteDetector
         foreach (var controllerType in controllerTypes)
         {
             List<string> actions;
-            var controllerAuthorizeAttribute = controllerType.GetCustomAttribute<ServiceFilterAttribute>();
-            if (controllerAuthorizeAttribute is not null &&
-                controllerAuthorizeAttribute.ServiceType == typeof(PermissionAuthorizeAttribute))
+            var controllerAuthorizeAttribute = controllerType.GetCustomAttribute<PermissionAuthorizeAttribute>();
+            if (controllerAuthorizeAttribute is not null)
             {
                 actions = controllerType.GetMethods().Where(method =>
                         method.IsPublic && method.GetCustomAttribute<HttpMethodAttribute>() is not null)
@@ -31,9 +30,8 @@ public class RouteDetector : IRouteDetector
             {
                 actions = controllerType.GetMethods().Where(method =>
                     {
-                        var actionAuthorizeAttribute = method.GetCustomAttribute<ServiceFilterAttribute>();
-                        return method.IsPublic && actionAuthorizeAttribute is not null &&
-                               actionAuthorizeAttribute.ServiceType == typeof(PermissionAuthorizeAttribute);
+                        var actionAuthorizeAttribute = method.GetCustomAttribute<PermissionAuthorizeAttribute>();
+                        return method.IsPublic && actionAuthorizeAttribute is not null;
                     })
                     .Select(method => method.Name).ToList();
             }
