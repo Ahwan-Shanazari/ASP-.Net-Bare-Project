@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Data.Repositories;
+using Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
