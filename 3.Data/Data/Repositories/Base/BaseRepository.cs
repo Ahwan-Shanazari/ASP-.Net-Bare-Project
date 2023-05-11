@@ -2,38 +2,56 @@ using System.Linq.Expressions;
 using Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace Data.Repositories.Base;
 
-public class BaseRepository<TEntity>:IBaseRepository<TEntity> where TEntity : class
+public abstract class BaseRepository<TEntity>:IBaseRepository<TEntity> where TEntity : class
 {
-    public readonly DbSet<TEntity> entities;
+    private readonly IMemoryCache _cache;
+    protected readonly DbSet<TEntity> Entities;
 
-    public BaseRepository(DataContext context)
+    public BaseRepository(DataContext context,IMemoryCache cache)
     {
-        entities = context.Set<TEntity>();
+        _cache = cache;
+        Entities = context.Set<TEntity>();
     }
 
     public async Task<TEntity> Read(Expression<Func<TEntity,bool>> predict)
     {
-        return await entities.AsNoTracking().FirstOrDefaultAsync(predict);
+        return await Entities.AsNoTracking().FirstOrDefaultAsync(predict);
+    }
+    
+    public async Task<List<TEntity>> ReadAllFromCacheOrDb()
+    {
+        return await _cache.GetOrCreateAsync($"{nameof(TEntity)}List", async entry =>
+        {
+            //ToDo:This Information Is General And Must Be Read From App Settings Or By Option Pattern
+            var entities = await Entities.AsNoTracking().ToListAsync(); 
+            entry.Priority = CacheItemPriority.Normal;
+            entry.Size = entities.Count;
+            entry.SlidingExpiration = TimeSpan.FromSeconds(30);
+            entry.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(1);
+            return entities;
+        } );
     }
 
     public async Task<TEntity> Create(TEntity entity)
     {
-        return (await entities.AddAsync(entity)).Entity;
+        return (await Entities.AddAsync(entity)).Entity;
     }
 
     public TEntity Update(TEntity entity)
     {
-        return entities.Update(entity).Entity;
+        return Entities.Update(entity).Entity;
     }
 
     public bool Delete(TEntity entity)
     {
-        if (!entities.Contains(entity))
+        if (!Entities.Contains(entity))
             return false;
-        entities.Remove(entity);
+        Entities.Remove(entity);
         return true;
     }
 }

@@ -8,4 +8,5 @@ public interface IBaseRepository<TEntity> where TEntity : class
     Task<TEntity> Create(TEntity entity);
     TEntity Update(TEntity entity);
     bool Delete(TEntity entity);
+    Task<List<TEntity>> ReadAllFromCacheOrDb();
 }
