@@ -2,6 +2,7 @@ using System.Reflection;
 using Data.Contexts;
 using Data.Repositories;
 using Data.Repositories.Base;
+using Data.Repositories.Interfaces;
 using Framework.Configurations;
 using Framework.Configurations.Initializers;
 using Service;

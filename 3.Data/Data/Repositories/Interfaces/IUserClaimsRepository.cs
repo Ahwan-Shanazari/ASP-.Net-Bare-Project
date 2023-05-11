@@ -1,7 +1,6 @@
 using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
 
-namespace Data.Repositories;
+namespace Data.Repositories.Interfaces;
 
 public interface IUserClaimsRepository
 {
