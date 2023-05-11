@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Security.Claims;
+using Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Service.Interfaces;
@@ -11,13 +12,20 @@ public class SuperAdminServices : ISuperAdminServices
 {
     private readonly RoleManager<IdentityRole<long>> _roleManager;
     private readonly UserManager<IdentityUser<long>> _userManager;
+    private readonly IUserRepository _userRepository;
 
-    public SuperAdminServices(RoleManager<IdentityRole<long>> roleManager, UserManager<IdentityUser<long>> userManager)
+    public SuperAdminServices(RoleManager<IdentityRole<long>> roleManager, UserManager<IdentityUser<long>> userManager, IUserRepository userRepository)
     {
         _roleManager = roleManager;
         _userManager = userManager;
+        _userRepository = userRepository;
     }
 
+    public async Task<List<IdentityUser<long>>> GetAllUsers()
+    {
+        return await _userRepository.ReadAllFromCacheOrDb();
+    }
+    
     public async Task<IDictionary<IdentityRole<long>, List<Claim>>> GetRolesWithPermissions(long? userId=null)
     {
         Dictionary<IdentityRole<long>, List<Claim>> result = new();

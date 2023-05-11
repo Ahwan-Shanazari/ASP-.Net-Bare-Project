@@ -34,6 +34,12 @@ public class SuperAdminController : BaseController
         //return Ok(_routeDetector.GetAllRoutes(typeof(SuperAdminController).Assembly));
         return Ok(ConvertRoutesToUrls(_routeDetector.GetAllRoutes(Assembly.GetExecutingAssembly())));
     }
+    
+    [HttpGet]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        return Ok(await _superAdminServices.GetAllUsers());
+    }
 
     [HttpGet]
     public async Task<ActionResult<List<RoleDto>>> GetAllRolesWithPermissions()

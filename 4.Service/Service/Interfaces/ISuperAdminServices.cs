@@ -30,4 +30,5 @@ public interface ISuperAdminServices
     Task<bool> AddRolesToUser(long userId, List<string> roleNames);
     Task<bool> RemoveUserRoles(long userId,List<string>? roleName = null);
     Task<bool> UpdateUserSecurityStampAsync(long userId);
+    Task<List<IdentityUser<long>>> GetAllUsers();
 }
