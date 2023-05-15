@@ -10,11 +10,12 @@ namespace Data.Repositories.Base;
 public abstract class BaseRepository<TEntity>:IBaseRepository<TEntity> where TEntity : class
 {
     private readonly IMemoryCache _cache;
+    public string CacheKey { get; }
     protected readonly DbSet<TEntity> Entities;
-
-    public BaseRepository(DataContext context,IMemoryCache cache)
+    protected BaseRepository(DataContext context,IMemoryCache cache)
     {
         _cache = cache;
+        CacheKey = typeof(TEntity).Name.Replace("`1","");
         Entities = context.Set<TEntity>();
     }
 
@@ -23,9 +24,14 @@ public abstract class BaseRepository<TEntity>:IBaseRepository<TEntity> where TEn
         return await Entities.AsNoTracking().FirstOrDefaultAsync(predict);
     }
     
+    public List<TEntity> ReadAll()
+    {
+        return Entities.ToList();
+    }
+    
     public async Task<List<TEntity>> ReadAllFromCacheOrDb()
     {
-        return await _cache.GetOrCreateAsync($"{nameof(TEntity)}List", async entry =>
+        return await _cache.GetOrCreateAsync(CacheKey, async entry =>
         {
             //ToDo:This Information Is General And Must Be Read From App Settings Or By Option Pattern
             var entities = await Entities.AsNoTracking().ToListAsync(); 
@@ -39,11 +45,13 @@ public abstract class BaseRepository<TEntity>:IBaseRepository<TEntity> where TEn
 
     public async Task<TEntity> Create(TEntity entity)
     {
+        _cache.Remove(CacheKey);
         return (await Entities.AddAsync(entity)).Entity;
     }
 
     public TEntity Update(TEntity entity)
     {
+        _cache.Remove(CacheKey);
         return Entities.Update(entity).Entity;
     }
 
@@ -51,7 +59,10 @@ public abstract class BaseRepository<TEntity>:IBaseRepository<TEntity> where TEn
     {
         if (!Entities.Contains(entity))
             return false;
+        
         Entities.Remove(entity);
+        _cache.Remove(CacheKey);
+        
         return true;
     }
 }
