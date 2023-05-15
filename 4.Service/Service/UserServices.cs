@@ -31,6 +31,7 @@ public class UserServices : BaseServices<IdentityUser<long>>, IUserServices
 
     public async Task<bool> CreateAccount(IdentityUser<long> user, string pass)
     {
+        //ToDo: Create A Custom User Manger And Inherit From Vanilla So We Can Implement Removing The Cache Functionality In There  
         var result = await _userManager.CreateAsync(user, pass);
 
         if (result.Succeeded)
@@ -67,8 +68,9 @@ public class UserServices : BaseServices<IdentityUser<long>>, IUserServices
         var keyX = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtOptions:KeyX"]));
 
         var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var encryptingCredentials = new EncryptingCredentials(keyX,SecurityAlgorithms.Aes128KW,SecurityAlgorithms.Aes256CbcHmacSha512);
-        
+        var encryptingCredentials =
+            new EncryptingCredentials(keyX, SecurityAlgorithms.Aes128KW, SecurityAlgorithms.Aes256CbcHmacSha512);
+
         List<Claim> claims = new()
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -76,12 +78,13 @@ public class UserServices : BaseServices<IdentityUser<long>>, IUserServices
             new Claim("SecurityStamp", user.SecurityStamp)
         };
         var jwtHandler = new JwtSecurityTokenHandler();
-        
-        var tokenOptions = new SecurityTokenDescriptor(){
-            Issuer= _configuration["JwtOptions:ValidIssuer"],
-            Audience= _configuration["JwtOptions:ValidAudience"],
+
+        var tokenOptions = new SecurityTokenDescriptor()
+        {
+            Issuer = _configuration["JwtOptions:ValidIssuer"],
+            Audience = _configuration["JwtOptions:ValidAudience"],
             Expires = DateTime.Now.AddMonths(1),
-            SigningCredentials= signingCredentials,
+            SigningCredentials = signingCredentials,
             EncryptingCredentials = encryptingCredentials,
             //ToDo: should we use Subject for claims or use Claims instead
             Subject = new ClaimsIdentity(claims)
