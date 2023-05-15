@@ -2,6 +2,7 @@ using System.Reflection;
 using Data.Contexts;
 using Data.Repositories;
 using Data.Repositories.Base;
+using Data.Repositories.Cached;
 using Data.Repositories.Interfaces;
 using Framework.Configurations;
 using Framework.Configurations.Initializers;
@@ -30,6 +31,8 @@ builder.Services.AddScoped<ISuperAdminServices, SuperAdminServices>();
 builder.Services.AddScoped<IUserClaimsRepository, UserClaimsRepository>();
 builder.Services.AddScoped<IUserRolesRepository, UserRolesRepository>();
 builder.Services.AddScoped<IRoleClaimRepository, RoleClaimRepository>();
+
+builder.Services.Decorate<IUserRepository, CachedUserRepository>();
 
 // Injecting The Context
 builder.Services.AddDefaultIdentityForAContext<DataContext>(builder.Configuration,"PermissionAuthDb");
