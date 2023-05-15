@@ -4,12 +4,13 @@ using Data.Repositories.Base;
 using Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 
 namespace Data.Repositories;
 
 public class RoleClaimRepository : BaseRepository<IdentityRoleClaim<long>>, IRoleClaimRepository
 {
-    public RoleClaimRepository(DataContext context,IMemoryCache cache) : base(context,cache)
+    public RoleClaimRepository(DataContext context, IMemoryCache cache, IConfiguration configuration) : base(context,cache, configuration)
     {
     }
 

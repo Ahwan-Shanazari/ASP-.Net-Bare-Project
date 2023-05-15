@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Data.Repositories.Base;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 
 namespace Data.Repositories.Cached.Base;
 
@@ -8,11 +9,13 @@ public class BaseCachedRepository<TEntity> : IBaseRepository<TEntity> where TEnt
 {
     private readonly IBaseRepository<TEntity> _baseRepository;
     private readonly IMemoryCache _cache;
+    private readonly IConfiguration _configuration;
 
-    public BaseCachedRepository(IBaseRepository<TEntity> baseRepository, IMemoryCache cache)
+    protected BaseCachedRepository(IBaseRepository<TEntity> baseRepository, IMemoryCache cache,IConfiguration configuration)
     {
         _baseRepository = baseRepository;
         _cache = cache;
+        _configuration = configuration;
         CacheKey = _baseRepository.CacheKey;
     }
 
@@ -61,8 +64,9 @@ public class BaseCachedRepository<TEntity> : IBaseRepository<TEntity> where TEnt
         {
             Priority = CacheItemPriority.Normal,
             Size = list.Count,
-            SlidingExpiration = TimeSpan.FromSeconds(30),
-            AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(1),
+            //ToDo: use a custom configuration class instead of the appsettings.json configuration  
+            SlidingExpiration = TimeSpan.FromSeconds(int.Parse(_configuration["CacheOptions:SlidingExpSeconds"])),
+            AbsoluteExpiration = DateTimeOffset.Now.AddSeconds(int.Parse(_configuration["CacheOptions:AbsoluteExpSeconds"])),
         });
     }
 }

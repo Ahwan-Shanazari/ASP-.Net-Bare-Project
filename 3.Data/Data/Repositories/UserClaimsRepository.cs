@@ -4,13 +4,14 @@ using Data.Repositories.Base;
 using Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Data.Repositories;
 
 public class UserClaimsRepository:BaseRepository<IdentityUserClaim<long>>, IUserClaimsRepository
 {
-    public UserClaimsRepository(DataContext context,IMemoryCache cache) : base(context,cache)
+    public UserClaimsRepository(DataContext context, IMemoryCache cache, IConfiguration configuration) : base(context,cache, configuration)
     {
     }
 

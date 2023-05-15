@@ -3,6 +3,7 @@ using Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Data.Repositories.Base;
@@ -10,11 +11,13 @@ namespace Data.Repositories.Base;
 public abstract class BaseRepository<TEntity>:IBaseRepository<TEntity> where TEntity : class
 {
     private readonly IMemoryCache _cache;
+    protected readonly IConfiguration Configuration;
     public string CacheKey { get; }
     protected readonly DbSet<TEntity> Entities;
-    protected BaseRepository(DataContext context,IMemoryCache cache)
+    protected BaseRepository(DataContext context, IMemoryCache cache, IConfiguration configuration)
     {
         _cache = cache;
+        Configuration = configuration;
         CacheKey = typeof(TEntity).Name.Replace("`1","");
         Entities = context.Set<TEntity>();
     }
@@ -37,8 +40,8 @@ public abstract class BaseRepository<TEntity>:IBaseRepository<TEntity> where TEn
             var entities = await Entities.AsNoTracking().ToListAsync(); 
             entry.Priority = CacheItemPriority.Normal;
             entry.Size = entities.Count;
-            entry.SlidingExpiration = TimeSpan.FromSeconds(30);
-            entry.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(1);
+            entry.SlidingExpiration = TimeSpan.FromSeconds(int.Parse(Configuration["CacheOptions:SlidingExpSeconds"]));
+            entry.AbsoluteExpiration = DateTimeOffset.Now.AddSeconds(int.Parse(Configuration["CacheOptions:AbsoluteExpSeconds"]));
             return entities;
         } );
     }
