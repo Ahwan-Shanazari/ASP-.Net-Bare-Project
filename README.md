@@ -4,6 +4,7 @@
  - EF Core
  - Custom Onion Architecture 
  - JWT Authentication
+ - JWT Encryption
  - Persmission Base Authorization
  - Policy Authorization 
  - SuperAdmin Sepcial Access
